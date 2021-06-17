@@ -2,6 +2,7 @@ package com.exam.examPortalServer.controllers;
 
 import com.exam.examPortalServer.entities.Role;
 import com.exam.examPortalServer.entities.User;
+import com.exam.examPortalServer.entities.User_Roles;
 import com.exam.examPortalServer.exception.BadRequestException;
 import com.exam.examPortalServer.services.UserService;
 import lombok.AllArgsConstructor;
@@ -24,18 +25,21 @@ public class UserController {
     @PostMapping("/add")
     public User createUser(@RequestBody User user) throws BadRequestException {
 
-        Set<Role> userroles = new HashSet<>();
-        Role role = new Role();
-        role.setRoleName("Customer");
-        Role r = new Role("Admin");
-        userroles.add(role);
-        userroles.add(r);
+        Set<User_Roles> userRoles = new HashSet<>();
+        Role r1 = new Role("Customer");
+//        Role r2 = new Role("Admin");
 
-        return this.userService.createUser(user, userroles);
+        User_Roles ur = new User_Roles();
+        ur.setUser(user);
+        ur.setRole(r1);
+
+        userRoles.add(ur);
+
+        return this.userService.createUser(user, userRoles);
     }
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) throws BadRequestException {
-        return userService.getUserById(id);
+    @GetMapping("/{name}")
+    public User getUserByUsername(@PathVariable String name) throws BadRequestException {
+        return userService.getByUsername(name);
     }
 
     @DeleteMapping("/delete/{id}")

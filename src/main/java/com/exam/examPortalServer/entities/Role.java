@@ -1,7 +1,6 @@
 package com.exam.examPortalServer.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,16 +14,16 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "roles")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handlers","users"})
+//@JsonIgnoreProperties({"hibernateLazyInitializer","handlers","users"})
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roleId;
     private String roleName;
 
-    @ManyToMany( fetch = FetchType.LAZY,cascade = CascadeType.ALL, mappedBy = "roles")
+    @OneToMany( fetch = FetchType.LAZY,cascade = CascadeType.ALL, mappedBy = "role")
     @JsonIgnore
-    private Set<User> users = new HashSet<>();
+    private Set<User_Roles> userRoles = new HashSet<>();
 
     public Role() {
     }
@@ -32,15 +31,14 @@ public class Role {
         super();
         this.roleName = roleName;
     }
-    public Set<User> getUsers() {
-        return users;
+
+    public Set<User_Roles> getUserRoles() {
+        return userRoles;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setUserRoles(Set<User_Roles> userRoles) {
+        this.userRoles = userRoles;
     }
-
-
 
     public Long getRoleId() {
         return roleId;

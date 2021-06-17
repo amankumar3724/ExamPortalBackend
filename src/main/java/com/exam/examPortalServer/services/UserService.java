@@ -1,7 +1,7 @@
 package com.exam.examPortalServer.services;
 
-import com.exam.examPortalServer.entities.Role;
 import com.exam.examPortalServer.entities.User;
+import com.exam.examPortalServer.entities.User_Roles;
 import com.exam.examPortalServer.exception.BadRequestException;
 import com.exam.examPortalServer.repository.IRoleRepository;
 import com.exam.examPortalServer.repository.IUserRepository;
@@ -18,22 +18,22 @@ public class UserService {
     @Autowired
     private IRoleRepository roleRepository;
 
-    public User createUser(User user, Set<Role> userRoles) throws BadRequestException {
+    public User createUser(User user, Set<User_Roles> userRoles) throws BadRequestException {
         User userExist = this.userRepository.findByUsername(user.getUsername());
         if(userExist!=null){
            throw new BadRequestException("Username already exists.");
         }
-        for(Role ur : userRoles){
-            this.roleRepository.save(ur);
-            user.getRoles().add(ur);
+        for(User_Roles ur : userRoles){
+            this.roleRepository.save(ur.getRole());
         }
+        user.getUserRoles().addAll(userRoles);
         return this.userRepository.save(user);
     }
-    public User getUserById(Long userId) throws BadRequestException {
-        Optional<User> user = userRepository.findById(userId);
-        if(user.isEmpty())
+    public User getByUsername(String name) throws BadRequestException {
+        User user = userRepository.findByUsername(name);
+        if(user==null)
             throw new BadRequestException("No such user exist");
-        return user.get();
+        return user;
     }
 
     public String deleteUser(Long id) throws BadRequestException {
